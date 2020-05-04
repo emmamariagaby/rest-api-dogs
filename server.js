@@ -37,13 +37,25 @@ app.get('/', (req, res) =>  {
 
 // read array
 app.get('/api/dogs', (req, res) => {
-    res.send([1, 2, 3]);
+    res.send(dogs);
 });
 
-// read and get individual id
+// read and get individual dog id
 app.get('/api/dogs/:id', (req, res) => {
-    res.send(req.params.id);
-});
+    let id = dogs.find((dog) => dog.id === parseInt(req.params.id))
+    
+      if (!id) {
+        return res.status(404).send({
+         message: 'dog does not exist in this database',
+        
+        
+                  });
+      } else
+      return res.status(200).send({
+      message: 'this dog exists in this database',
+    });
+  });
+
 
 // setup port 
 const port = process.env.PORT || 3000;
