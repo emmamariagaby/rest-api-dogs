@@ -43,7 +43,7 @@ app.get('/api/dogs', (req, res) => {
 // read and get individual dog id
 app.get('/api/dogs/:id', (req, res) => {
     let id = dogs.find((dog) => dog.id === parseInt(req.params.id))
-    
+    // checks if dog exists or not in database
       if (!id) {
         return res.status(404).send({
          message: 'dog does not exist in this database',
