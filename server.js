@@ -1,13 +1,22 @@
 const express = require('express')
 const app = express()
 
+// read
 app.get('/', (req, res) =>  {
-    res.send('Hello World');
+    res.send('Dog api');
 });
 
-app.get('api/courses', (req, res) => {
+// read array
+app.get('/api/dogs', (req, res) => {
     res.send([1, 2, 3]);
 });
 
-app.listen(3000, () => console.log('Listening on port 3000..'));
+// read and get individual id
+app.get('/api/dogs/:id', (req, res) => {
+    res.send(req.params.id);
+});
+
+// setup port 
+const port = process.env.PORT || 3000;
+app.listen(port, () => console.log(`Listening on port http://localhost:${port}`));
 
