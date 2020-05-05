@@ -88,12 +88,12 @@ app.get('/api/dogs/:id', (req, res) => {
     const id = parseInt(req.params.id);
     let dogFound;
     let itemIndex;
-    (dog, index) => {
+    dogs.map((dog, index) => {
       if (dog.id === id) {
         dogFound = dog;
         itemIndex = index;
       }
-    };
+    });
   
     if (!dogFound) {
       return res.status(404).send({
@@ -124,6 +124,27 @@ app.get('/api/dogs/:id', (req, res) => {
     });
   });
 
+  //delete dog from database
+   app.delete('/api/dogs/:id', (req, res) => {
+    const id = parseInt(req.params.id);
+  
+     dogs.map((dog, index) => {
+      if (dog.id === id) {
+         dogs.splice(index, 1);
+         return res.status(200).send({
+           message: 'Dog deleted successfuly from database',
+         });
+      }
+    });
+  
+    //when trying to delete non existing dog
+    //404 not found
+      return res.status(404).send({
+        message: 'dog not found',
+      });
+  
+   
+  });
 
 
 // setup port 
