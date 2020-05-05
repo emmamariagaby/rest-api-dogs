@@ -52,7 +52,6 @@ app.get('/api/dogs/:id', (req, res) => {
         return res.status(404).send({
          message: 'dog does not exist in this database',
         
-        
                   });
       } else
       return res.status(200).send({
@@ -83,6 +82,48 @@ app.get('/api/dogs/:id', (req, res) => {
      dogs
    })
   });
+
+  //update dog
+    app.put('/api/dogs/:id', (req, res) => {
+    const id = parseInt(req.params.id);
+    let dogFound;
+    let itemIndex;
+    (dog, index) => {
+      if (dog.id === id) {
+        dogFound = dog;
+        itemIndex = index;
+      }
+    };
+  
+    if (!dogFound) {
+      return res.status(404).send({
+        message: 'dog not found',
+      });
+    }
+  
+    if (!req.body.name) {
+      return res.status(400).send({
+        message: 'dog name is required',
+      });
+    } else if (!req.body.breed) {
+      return res.status(400).send({
+        message: 'dog breed is required',
+      });
+    }
+  
+    const updateDog = {
+      id: dogFound.id,
+      name: req.body.name || dogFound.name,
+      breed: req.body.breed || dogFound.breed,
+    };
+  
+    dogs.splice(itemIndex, 1, updateDog);
+  
+    return res.status(201).send({
+      message: 'dog added successfully to database',
+    });
+  });
+
 
 
 // setup port 
