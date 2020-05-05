@@ -1,0 +1,27 @@
+GET http://localhost:3000/api/dogs/
+
+###
+
+GET http://localhost:3000/api/dogs/1111
+
+###
+
+POST http://localhost:3000/api/dogs/ 
+Content-Type: application/json
+
+{
+"name": "Melvin", "breed": "Duck tolling retriever"
+}
+
+###
+
+PUT http://localhost:3000/api/dogs/1111 
+Content-Type: application/json
+
+{
+"name": "André", "breed": "Italian greyhound"
+}
+
+###
+
+DELETE http://localhost:3000/api/dogs/1111

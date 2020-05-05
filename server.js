@@ -1,5 +1,9 @@
 const express = require('express')
 const app = express()
+const bodyParser = require('body-parser')
+// Parse incoming requests data
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: false }));
 
 // dog api 
 const dogs = [
@@ -54,6 +58,30 @@ app.get('/api/dogs/:id', (req, res) => {
       return res.status(200).send({
       message: 'this dog exists in this database',
     });
+  });
+
+  // add new dog to database
+    app.post('/api/dogs/', (req, res) => {
+    if(!req.body.name) {
+      return res.status(400).send({
+        message: 'dog name is required'
+      });
+    } else if(!req.body.breed) {
+      return res.status(400).send({
+        message: 'dog breed is required'
+      });
+    }
+   const addDog = {
+     id: dogs.length + 1,
+     name: req.body.name,
+     breed: req.body.breed
+   }
+   // 201 created
+   dogs.push(addDog);
+   return res.status(201).send({
+     message: 'dog added successfully to database',
+     dogs
+   })
   });
 
 
