@@ -51,13 +51,14 @@ app.get('/api/dogs/:id', (req, res) => {
   if (!id) {
     return res.status(404).send({
       message: 'dog does not exist in this database',
-
     });
   } else
     return res.status(200).send({
       message: 'this dog exists in this database',
+    
     });
 });
+res.send(id)
 
 // create new dog to database
 app.post('/api/dogs/', (req, res) => {
