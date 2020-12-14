@@ -1,6 +1,7 @@
 const express = require('express')
 const app = express()
-const bodyParser = require('body-parser')
+const bodyParser = require('body-parser');
+const { response } = require('express');
 // Parse incoming requests data
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
@@ -55,61 +56,71 @@ app.get('/api/dogs/:id', (req, res) => {
   } else
     return res.status(200).send({
       message: 'this dog exists in this database',
-    
+
     });
 });
-res.send(id)
+
 
 // create new dog to database
 app.post('/api/dogs/', (req, res) => {
-  if (!req.body.name) {
-    return res.status(400).send({
-      message: 'dog name is required'
-    });
-  } else if (!req.body.breed) {
-    return res.status(400).send({
-      message: 'dog breed is required'
-    });
+  if (validateNameAndBreed(req, res)) {
+    addDog(req);
+    sendOKResponse(res);
   }
-  const addDog = {
-    id: dogs.length + 1,
-    name: req.body.name,
-    breed: req.body.breed
-  }
-  // 201 created
-  dogs.push(addDog);
-  return res.status(201).send({
+});
+
+function sendOKResponse(res) {
+  res.status(201).send({
     message: 'dog added successfully to database',
     dogs
   })
-});
+}
+
+function addDog(req) {
+  let dog = createDog(req.body.name, req.body.breed);
+  dogs.push(dog)
+}
+
+function createDog(name, breed) {
+  let dog = {
+    id: dogs.length + 1,
+    name: name,
+    breed: breed
+  }
+  return dog;
+}
+
+function validateNameAndBreed(req, res) {
+  if (!req.body.name) {
+    res.status(400).send({
+      message: 'dog name is required'
+    });
+
+    return false;
+
+  } else if (!req.body.breed) {
+    res.status(400).send({
+      message: 'dog breed is required'
+    });
+    return false;
+
+  } else {
+    return true;
+  }
+}
 
 //update new dog to database
 app.put('/api/dogs/:id', (req, res) => {
-  const id = parseInt(req.params.id);
-  let dogFound;
-  let itemIndex;
-  dogs.map((dog, index) => {
-    if (dog.id === id) {
-      dogFound = dog;
-      itemIndex = index;
-    }
-  });
 
-  if (!dogFound) {
-    return res.status(404).send({
-      message: 'dog not found',
-    });
+  let updateEntity = findDogById(req.params.id);
+
+  if (!updateEntity.dog) {
+    sendDogNotFoundMessage(res)
+    return;
   }
 
-  if (!req.body.name) {
-    return res.status(400).send({
-      message: 'dog name is required',
-    });
-  } else if (!req.body.breed) {
-    return res.status(400).send({
-      message: 'dog breed is required',
-    });
+  if (validateNameAndBreed(req, res)) {
+
   }
 
   const updateDog = {
@@ -124,6 +135,29 @@ app.put('/api/dogs/:id', (req, res) => {
     message: 'dog added successfully to database',
   });
 });
+
+function sendDogNotFoundMessage(res) {
+  res.status(404).send({
+    message: 'dog not found',
+  });
+}
+
+function findDogById(id) {
+  let dogFound;
+  let dogIndex;
+
+  dogs.map((dog, index) => {
+    if (dog.id === id) {
+      dogFound = dog;
+      dogIndex = index;
+    }
+  });
+
+  return {
+    dog: dogFound,
+    dogIndex: dogIndex
+  }
+}
 
 //delete dog from database
 app.delete('/api/dogs/:id', (req, res) => {
