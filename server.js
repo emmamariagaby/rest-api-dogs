@@ -2,54 +2,49 @@ const express = require('express')
 const app = express()
 const bodyParser = require('body-parser');
 const { response } = require('express');
-// Parse incoming requests data
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 
-// dog api 
 const dogs = [
   {
-    id: 1111,
+    id: 1,
     name: "Bellman",
     breed: "Staffordshire bullterrier",
   },
   {
-    id: 2222,
+    id: 2,
     name: "Tova",
     breed: "Retriever mix",
   },
   {
-    id: 3333,
+    id: 3,
     name: "Love",
     breed: "Pomeranian",
   },
   {
-    id: 4444,
+    id: 4,
     name: "Texas",
     breed: "Dachshund",
   },
   {
-    id: 5555,
+    id: 5,
     name: "Astrid",
     breed: "Petit brabancon",
   },
 ]
 
-// read
 app.get('/', (req, res) => {
   res.send('Dog api');
 });
 
-// read 
 app.get('/api/dogs', (req, res) => {
   res.send(dogs);
 });
 
-// read and get individual dog id
 app.get('/api/dogs/:id', (req, res) => {
-  let id = dogs.find((dog) => dog.id === parseInt(req.params.id))
-  // checks if dog exists or not in database
-  if (!id) {
+  let dogSearch = dogs.find((dog) => dog.id === parseInt(req.params.id))
+
+  if (!dogSearch) {
     return res.status(404).send({
       message: 'dog does not exist in this database',
     });
@@ -60,8 +55,6 @@ app.get('/api/dogs/:id', (req, res) => {
     });
 });
 
-
-// create new dog to database
 app.post('/api/dogs/', (req, res) => {
   if (validateNameAndBreed(req, res)) {
     addDog(req);
@@ -109,7 +102,6 @@ function validateNameAndBreed(req, res) {
   }
 }
 
-//update new dog to database
 app.put('/api/dogs/:id', (req, res) => {
 
   let updateEntity = findDogById(req.params.id);
@@ -153,12 +145,10 @@ function findDogById(id) {
   }
 }
 
-//delete dog from database
 app.delete('/api/dogs/:id', (req, res) => {
-  const id = parseInt(req.params.id);
 
   dogs.map((dog, index) => {
-    if (dog.id === id) {
+    if (dog.id === parseInt(req.params.id)) {
       dogs.splice(index, 1);
       return res.status(200).send({
         message: 'Dog deleted successfully from database',
@@ -166,16 +156,12 @@ app.delete('/api/dogs/:id', (req, res) => {
     }
   });
 
-  //when trying to delete non existing dog
-  //404 not found
   return res.status(404).send({
     message: 'dog not found',
   });
 
-
 });
 
-// setup port 
 const port = process.env.PORT || 3000;
 app.listen(port, () => console.log(`Listening on port http://localhost:${port}`));
 
