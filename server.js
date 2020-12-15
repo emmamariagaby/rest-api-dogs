@@ -120,20 +120,14 @@ app.put('/api/dogs/:id', (req, res) => {
   }
 
   if (validateNameAndBreed(req, res)) {
-
+    const updateDog = {
+      id: dogFound.id,
+      name: req.body.name || dogFound.name,
+      breed: req.body.breed || dogFound.breed,
+    };
+    dogs.splice(itemIndex, 1, updateDog);
+    sendOKResponse(res);
   }
-
-  const updateDog = {
-    id: dogFound.id,
-    name: req.body.name || dogFound.name,
-    breed: req.body.breed || dogFound.breed,
-  };
-
-  dogs.splice(itemIndex, 1, updateDog);
-
-  return res.status(201).send({
-    message: 'dog added successfully to database',
-  });
 });
 
 function sendDogNotFoundMessage(res) {
